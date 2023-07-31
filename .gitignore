@@ -1,0 +1,8 @@
+# Ignore everything in the root directory
+/*
+
+# Allow directories
+# !*/
+
+# Allow Python files
+!**.py
