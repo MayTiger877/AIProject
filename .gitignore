@@ -12,6 +12,7 @@
 
 !/orchestrator
 /orchestrator/*
+!/orchestrator/outputs
 
 !*.py
 !*.sh
