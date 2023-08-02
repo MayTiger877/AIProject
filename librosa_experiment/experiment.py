@@ -38,6 +38,58 @@ from LateSupressionUnet import *
 from DeNoiserUnet import *
 from FineTuneModel import *
 
+def generate_spec_exp(audio_sequence, rate, n_fft=4096, hop_length=512):
+    """
+    Generate spectrogram using librosa
+    audio_sequence: list representing waveform
+    rate: sampling rate (16000 for all LibriSpeech audios)
+    nfft and hop_length: stft parameters
+    """
+    S = librosa.feature.melspectrogram(y=audio_sequence, sr=rate, n_fft=n_fft, hop_length=hop_length, n_mels=128, fmin=20,
+                                       fmax=8000)
+    log_spectra = librosa.power_to_db(S, ref=np.mean, top_db=80)
+    return log_spectra
+
+def reconstruct_wave_exp(spec, rate=16000, normalize_data=False):
+    """
+    Reconstruct waveform
+    spec: spectrogram generated using Librosa
+    rate: sampling rate
+    """
+    power = librosa.db_to_power(spec, ref=5.0)
+    audio = librosa.feature.inverse.mel_to_audio(power, sr=rate, n_fft=4096, hop_length=512)
+    out_audio = audio / np.max(audio) if normalize_data else audio
+    return out_audio
+
+
+def graph_spec_exp(spec, rate=16000, title="Log-Power spectrogram", save_path="./spec"):
+    """
+    plot spectrogram
+    spec: spectrogram generated using Librosa
+    rate: sampling rate
+    """
+    plt.figure()
+    display.specshow(spec, sr=rate, y_axis='mel', x_axis='time')
+    plt.colorbar(format='%+2.0f dB')
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(save_path + ".png")
+
+def plot_time_wave_exp(audio, title, rate=16000):
+    """
+    plot waveform given speech audio
+    audio: array containing waveform
+    rate: sampling rate
+
+    """
+    time = np.linspace(0, len(audio)/rate, len(audio), endpoint=False)
+    plt.figure()
+    plt.plot(time, audio)
+    plt.xlabel("Time (secs)")
+    plt.ylabel("Power")
+    plt.savefig(f"{title}.jpg")
+
+#######################################################################################################
 
 def check_librosa_wav_to_spec():
     """ """
@@ -50,16 +102,24 @@ def check_librosa_wav_to_spec():
     revereb_example_data, revereb_example_time, revereb_example_rate = extract_audio(revereb_example)
     
     # generate spectrograms
-    dry_spec = generate_spec(dry_example_data, dry_example_rate)
-    reverb_spec = generate_spec(revereb_example_data, revereb_example_rate)
+    dry_spec =      generate_spec_exp(dry_example_data,     dry_example_rate)
+    reverb_spec =   generate_spec_exp(revereb_example_data, revereb_example_rate)
+    
+    # graph time waves
+    plot_time_wave_exp(dry_example_data, "Dry_Wave_before")
+    plot_time_wave_exp(revereb_example_data, "Wet_Wave_before")
     
     # graph spectrograms
-    graph_spec(dry_spec,    dry_example_rate,       "Dry_Spec_before")
-    graph_spec(reverb_spec, revereb_example_rate,   "Wet_Spec_before")
+    graph_spec_exp(dry_spec,    dry_example_rate,       "Dry_Spec_before", "Dry_Spec_before")
+    graph_spec_exp(reverb_spec, revereb_example_rate,   "Wet_Spec_before", "Wet_Spec_before")
     
     # reconstruct wav files
-    reconstruct_dry = reconstruct_wave(dry_spec, dry_example_rate)
-    reconstruct_wet = reconstruct_wave(reverb_spec, revereb_example_rate)
+    reconstruct_dry = reconstruct_wave_exp(dry_spec, dry_example_rate)
+    reconstruct_wet = reconstruct_wave_exp(reverb_spec, revereb_example_rate)
+    
+    # graph time waves afetr reconstruction
+    plot_time_wave_exp(reconstruct_dry, "Dry_Wave_after")
+    plot_time_wave_exp(reconstruct_wet, "Wet_Wave_after")
     
     # save wav files
     sf.write("reconstruct_dry.wav", reconstruct_dry, dry_example_rate)
