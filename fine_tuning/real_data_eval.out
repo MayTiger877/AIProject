@@ -1,0 +1,8 @@
+*** SLURM BATCH JOB 'trainig_model' STARTING ***
+*** Activating environment reverb ***
+/home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  cpuset_checked))
+4250
+750
+Current device: cuda:0
+*** SLURM BATCH JOB 'trainig_model' DONE ***

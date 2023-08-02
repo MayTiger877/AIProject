@@ -1,0 +1,34 @@
+*** SLURM BATCH JOB 'trainig_model' STARTING ***
+*** Activating environment reverb ***
+11453
+2022
+/home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  cpuset_checked))
+Epoch : 1 || Train Loss: 1035.149 || Val Loss: 1064.448
+Epoch : 2 || Train Loss: 896.305 || Val Loss: 846.199
+saved models
+Epoch : 3 || Train Loss: 657.411 || Val Loss: 700.990
+Epoch : 4 || Train Loss: 545.402 || Val Loss: 562.250
+saved models
+Epoch : 5 || Train Loss: 414.642 || Val Loss: 357.738
+Epoch : 6 || Train Loss: 264.347 || Val Loss: 263.572
+saved models
+Epoch : 7 || Train Loss: 181.086 || Val Loss: 203.042
+Epoch : 8 || Train Loss: 118.041 || Val Loss: 94.471
+saved models
+Epoch : 9 || Train Loss: 81.000 || Val Loss: 81.132
+Epoch : 10 || Train Loss: 44.638 || Val Loss: 57.522
+saved models
+Epoch : 11 || Train Loss: 42.209 || Val Loss: 48.980
+Epoch : 12 || Train Loss: 25.626 || Val Loss: 27.286
+saved models
+Epoch : 13 || Train Loss: 29.265 || Val Loss: 42.880
+Epoch : 14 || Train Loss: 21.828 || Val Loss: 23.316
+saved models
+Epoch : 15 || Train Loss: 20.273 || Val Loss: 29.603
+Epoch : 16 || Train Loss: 18.971 || Val Loss: 41.561
+saved models
+Epoch : 17 || Train Loss: 17.859 || Val Loss: 7.998
+Epoch : 18 || Train Loss: 19.005 || Val Loss: 27.233
+saved models
+*** SLURM BATCH JOB 'trainig_model' DONE ***

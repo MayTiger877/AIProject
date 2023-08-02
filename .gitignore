@@ -1,8 +1,21 @@
 # Ignore everything in the root directory
 /*
 
-# Allow directories
-# !*/
+!/fine_tuning
+/fine_tuning/*
 
-# Allow Python files
-!**.py
+!/data
+/data/*
+
+!/de_noising
+/de_noising/*
+
+!/orchestrator
+/orchestrator/*
+
+!*.py
+!*.sh
+!*.txt
+!*.md
+!*.jpg
+!*.out
