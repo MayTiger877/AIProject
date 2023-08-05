@@ -249,13 +249,21 @@ def present_outputs():
     time_size = 340
     frequency_size = 128
 
+    # dry example to hear the cv resize effect
+    graph_spec(dry_spec, title="de_dry_spec_not_cvsized", save_path='/home/may.tiger/AIProject/orchestrator/outputs/de_dry_spec_not_cvsized')
+    de_dry_wav_not_cvsized = reconstruct_wave(dry_spec, dry_example_rate)
+    sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_dry_spec_not_cvsized.wav', de_dry_wav_not_cvsized, 16000)
+    
     dry_spec =          cv2.resize(dry_spec,          dsize = (time_size, frequency_size), interpolation = cv2.INTER_LANCZOS4)
     noisy_spec =        cv2.resize(noisy_spec,        dsize = (time_size, frequency_size), interpolation = cv2.INTER_LANCZOS4)
     reverbed_spec =     cv2.resize(reverbed_spec,     dsize = (time_size, frequency_size), interpolation = cv2.INTER_LANCZOS4)
     noisy_reverb_spec = cv2.resize(noisy_reverb_spec, dsize = (time_size, frequency_size), interpolation = cv2.INTER_LANCZOS4)
+    
     noisy_spec = noisy_spec.reshape((1, noisy_spec.shape[0], noisy_spec.shape[1]))
     reverbed_spec = reverbed_spec.reshape((1, reverbed_spec.shape[0], reverbed_spec.shape[1]))
     noisy_reverb_spec = noisy_reverb_spec.reshape((1, noisy_reverb_spec.shape[0], noisy_reverb_spec.shape[1]))
+    
+    graph_spec(dry_spec, title="de_dry_spec", save_path='/home/may.tiger/AIProject/orchestrator/outputs/de_dry_spec')
     
     net_input = torch.zeros((1, 1, noisy_spec.shape[1], noisy_spec.shape[2]))
     net_input[0, :, :, :] = torch.from_numpy(noisy_spec)
@@ -271,11 +279,15 @@ def present_outputs():
     net_input[0, :, :, :] = torch.from_numpy(noisy_reverb_spec)
     de_noisy_de_reverbed_spec = model_FineTuning(net_input.cuda())
     graph_spec(de_noisy_de_reverbed_spec[0, 0, :, :].cpu().detach().numpy(), title="de_noisy_de_reverbed_spec", save_path='/home/may.tiger/AIProject/orchestrator/outputs/de_noisy_de_reverbed_spec')
+    
     # save wav files
+    de_dry_wav = reconstruct_wave(dry_spec, dry_example_rate)
     de_noised_wav = reconstruct_wave(de_noised_spec[0, 0, :, :].cpu().detach().numpy(), noisy_example_rate)
     de_reverbed_wav = reconstruct_wave(de_reverbed_spec[0, 0, :, :].cpu().detach().numpy(), reverbed_example_rate)
     de_noisy_de_reverbed_wav = reconstruct_wave(de_noisy_de_reverbed_spec[0, 0, :, :].cpu().detach().numpy(), noisy_reverb_example_rate)
+    
     #save all wav files
+    sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_dry_audio.wav', de_dry_wav, dry_example_rate)
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_noised_audio.wav', de_noised_wav, noisy_example_rate)
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_reverbed_audio.wav', de_reverbed_wav, reverbed_example_rate)
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_noisy_de_reverbed_audio.wav', de_noisy_de_reverbed_wav, noisy_reverb_example_rate)
@@ -294,7 +306,7 @@ def present_outputs():
 # FineTuning_train()
 # FineTuning_eval()
 
-# FineTuning_pesq_test()
+FineTuning_pesq_test()
 
 
 # present_outputs()

@@ -519,6 +519,7 @@ def FineTuning_eval():
   ##print('SRMR: {:.2f}'.format(np.mean(#de#reverb_srmr_list)))
 
 def FineTuning_pesq_test():
+  ''' '''
   LateSupUNetModel = LateSupUnet(n_channels=1, bilinear=False).cuda()
   DeNoiserModel = DeNoiseUNet(n_channels=1, bilinear=False).cuda()
   model_FineTuning = FineTuningUNet(LateSupUNetModel, DeNoiserModel)
@@ -545,10 +546,10 @@ def pesq_evaluate(net, dataset, path, noisyspecs, init_example, end_example, spe
   for i in range(init_example, end_example):
     print("Processing Example n°{}".format(i+1))
     real_spec = noisyspecs[i]
-    print(real_spec.shape)
+    # print(real_spec.shape)
     rev_spec, clean_spec = dataset.__getitem__(i)
-    print(rev_spec.shape)
-    print(clean_spec.shape)
+    # print(rev_spec.shape)
+    # print(clean_spec.shape)
     clean_spec = clean_spec[0, :, :]
     net_input = torch.zeros((1, 1, rev_spec.shape[1], rev_spec.shape[2]))
     
@@ -567,6 +568,11 @@ def pesq_evaluate(net, dataset, path, noisyspecs, init_example, end_example, spe
       recon = reconstruct_wave(recon_spec)
       recon_srmr = recon
 
+      
+      print(reverb.shape)
+      if (isinstance(reverb, np.ndarray) and reverb.ndim == 1):
+        print('reverb is a 1D array')
+        
       pesq_metric_rev = pesq(original[0:len(reverb)], reverb, fs=speech_rate)
 
       pesq_metric_recon = pesq(original[0:len(recon)], recon, fs=speech_rate)
