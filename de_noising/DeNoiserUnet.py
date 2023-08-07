@@ -28,6 +28,9 @@ from utils import *
 ################################## DeNoiser using Unet #################################
 
 class DeNoiseUNet(nn.Module):
+  """
+	De-Noiser regulat U-net
+	"""
   def __init__(self, n_channels, bilinear=True, confine = True):
     super(DeNoiseUNet, self).__init__()
     self.confine = confine
@@ -39,6 +42,10 @@ class DeNoiseUNet(nn.Module):
     self.down3 = Down(256, 512)
     factor = 2 if bilinear else 1
     self.down4 = Down(512, 1024 // factor)
+    # self.up1 = Up_NoResiduals(1024, 512 // factor, bilinear)
+    # self.up2 = Up_NoResiduals(512, 256 // factor, bilinear)
+    # self.up3 = Up_NoResiduals(256, 128 // factor, bilinear)
+    # self.up4 = Up_NoResiduals(128, 64, bilinear)
     self.up1 = Up(1024, 512 // factor, bilinear)
     self.up2 = Up(512, 256 // factor, bilinear)
     self.up3 = Up(256, 128 // factor, bilinear)
@@ -46,19 +53,19 @@ class DeNoiseUNet(nn.Module):
     self.outc = OutConv(64, 1)
     self.tanh = nn.Tanh()
 
-  def forward(self, x):
-      x1 = self.inc(x)
-      x2 = self.down1(x1)
-      x3 = self.down2(x2)
-      x4 = self.down3(x3)
-      x5 = self.down4(x4)
-      x = self.up1(x5, x4)
-      x = self.up2(x, x3)
-      x = self.up3(x, x2)
-      x = self.up4(x, x1)
-      x = self.outc(x)
-      output = self.tanh(x) if self.confine else x
-      return x
+  def forward(self, input):
+    x1 = self.inc(input)
+    x2 = self.down1(x1)
+    x3 = self.down2(x2)
+    x4 = self.down3(x3)
+    x5 = self.down4(x4)
+    x = self.up1(x5, x4)
+    x = self.up2(x, x3)
+    x = self.up3(x, x2)
+    x = self.up4(x, x1)
+    x = self.outc(x)
+    output = self.tanh(x) if self.confine else x
+    return x
 
 ###################################################################################################################
 ###################################################################################################################
@@ -85,6 +92,20 @@ def load_data():
   dataset_train, dataset_val = random_split(total_dataset, lengths)
   print(len(dataset_train))
   print(len(dataset_val))
+  return dataset_train, dataset_val
+
+def load_extra_data():
+  X = torch.load('/home/may.tiger/AIProject/de_noising/generateSpecs_extra/noisyspecs.pth')
+  y = torch.load('/home/may.tiger/AIProject/de_noising/generateSpecs_extra/cleanspecs.pth')
+  
+  total_dataset = ReverbDataset(X, y)
+  length_train = int(len(total_dataset)*0.85)
+  length_val = len(total_dataset) - length_train
+  lengths = [length_train, length_val]
+  dataset_train, dataset_val = random_split(total_dataset, lengths)
+  print(len(dataset_train))
+  print(len(dataset_val))
+  return dataset_train, dataset_val
 
 def trainer(model, train_loader, val_loader, checkpoints, nEpochs = 30, lr = 1e-3):
   """
@@ -111,6 +132,9 @@ def trainer(model, train_loader, val_loader, checkpoints, nEpochs = 30, lr = 1e-
   for epoch in range(nEpochs):
     temp_train_loss = 0.0
     corrects_train = 0
+    if (epoch >= 15):
+      lr = 2e-4
+      optimizer = torch.optim.Adam(model.parameters(), lr, (beta1, beta2))
     for i, (noisy_data, clean_data) in enumerate(train_loader):
       noisy_data = noisy_data.cuda()
       clean_data = clean_data.cuda()
@@ -154,8 +178,8 @@ def trainer(model, train_loader, val_loader, checkpoints, nEpochs = 30, lr = 1e-
 
 def DENoise_train():
   dataset_train, dataset_val = load_data()
-  train_loader = DataLoader(dataset_train, batch_size = 32, shuffle = True, num_workers = 4, pin_memory = True)
-  val_loader = DataLoader(dataset_val, batch_size = 32, shuffle = True, num_workers = 4, pin_memory = True)
+  train_loader = DataLoader(dataset_train, batch_size = 16, shuffle = True, num_workers = 4, pin_memory = True)
+  val_loader = DataLoader(dataset_val, batch_size = 16, shuffle = True, num_workers = 4, pin_memory = True)
   net = DeNoiseUNet(n_channels=1, bilinear=False, confine=False).cuda()
                   
   checkpoints = ['/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_state_dict.pth', 
@@ -163,7 +187,7 @@ def DENoise_train():
                  '/home/may.tiger/AIProject/de_noising/training/losses/val_loss_DeNoiser.pth']
                                                                                       # אפוקים זוגיים!!
   epochs = 18
-  lr = 2e-4
+  lr = 2e-2
   train_loss, val_loss = trainer(net, train_loader, val_loader, checkpoints, lr=lr, nEpochs = epochs)
 
   plt.style.reload_library()
@@ -182,6 +206,38 @@ def DENoise_train():
   plt.legend()
   plt.savefig(f"DE_Noiser_MSE_loss_to_epochs.jpg")
 
+def DENoise_train_extra():
+  dataset_train, dataset_val = load_extra_data()
+  train_loader = DataLoader(dataset_train, batch_size = 16, shuffle = True, num_workers = 4, pin_memory = True)
+  val_loader = DataLoader(dataset_val, batch_size = 16, shuffle = True, num_workers = 4, pin_memory = True)
+  net = DeNoiseUNet(n_channels=1, bilinear=False, confine=False).cuda()
+
+  net.load_state_dict(torch.load('/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_state_dict.pth'))
+                  
+  checkpoints = ['/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_extra_state_dict.pth', 
+                 '/home/may.tiger/AIProject/de_noising/training/losses/train_extra_loss_DeNoiser.pth', 
+                 '/home/may.tiger/AIProject/de_noising/training/losses/val_extra_loss_DeNoiser.pth']
+  
+  epochs = 12
+  lr = 2e-3
+  train_loss, val_loss = trainer(net, train_loader, val_loader, checkpoints, lr=lr, nEpochs = epochs)
+
+  plt.style.reload_library()
+  train_loss = torch.load('/home/may.tiger/AIProject/de_noising/training/losses/train_loss_extra_DeNoiser.pth')
+  val_loss =   torch.load('/home/may.tiger/AIProject/de_noising/training/losses/val_loss_extra_DeNoiser.pth')
+  matplotlib.rc('xtick', labelsize=10) 
+  matplotlib.rc('ytick', labelsize=10)
+  matplotlib.rcParams.update({'font.size': 10})
+  plt.figure()
+  plt.rcParams["font.family"] = "serif"
+  plt.plot(np.arange(1, (epochs+1), 1), train_loss, '-', label = 'Train loss')
+  plt.plot(np.arange(1, (epochs+1), 1), val_loss, '-', label = 'Validation loss')
+  plt.xlabel('Epochs')
+  plt.ylabel('MSE loss')
+  plt.grid()
+  plt.legend()
+  plt.savefig(f"DE_Noiser_extra_MSE_loss_to_epochs.jpg")
+  
 ### ------------------------ EVALUATION ------------------------ 
 
 def evaluate_by_audio(model_G, counter, audio_dirs, num_example, speech_rate=16000):

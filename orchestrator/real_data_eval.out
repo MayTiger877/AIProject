@@ -1,4 +1,7 @@
 *** SLURM BATCH JOB 'trainig_model' STARTING ***
 *** Activating environment reverb ***
-/var/spool/slurmd/job216423/slurm_script: line 10: 613094 Segmentation fault      (core dumped) python orchestrator.py
+Traceback (most recent call last):
+  File "orchestrator.py", line 340, in <module>
+    DENoise_gen_spec_extra()
+NameError: name 'DENoise_gen_spec_extra' is not defined
 *** SLURM BATCH JOB 'trainig_model' DONE ***

@@ -46,6 +46,7 @@ sbatch \
 	--mail-user $MAIL_USER \
 	--mail-type $MAIL_TYPE \
 	-o 'real_data_eval.out' \
+	-w lambda2 \
 <<EOF
 #!/bin/bash
 echo "*** SLURM BATCH JOB '$JOB_NAME' STARTING ***"

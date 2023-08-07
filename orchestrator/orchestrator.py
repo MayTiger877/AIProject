@@ -210,6 +210,44 @@ def divide_and_move_data():
     clean_dir = "/home/may.tiger/AIProject/fine_tune_data/clean_16Hz"
     noisy_dir = "/home/may.tiger/AIProject/fine_tune_data/noisyreverb_16Hz"
 
+def add_noise_to_data():
+    clean_dir = "/home/may.tiger/AIProject/big_data_set/denoise_extra/dry"
+    noisy_dir = "/home/may.tiger/AIProject/big_data_set/denoise_extra/wet"
+    clean_files = os.listdir(clean_dir)
+    noisy_files = os.listdir(noisy_dir)
+    for i in tqdm(range(len(clean_files))):
+        clean_file = clean_files[i]
+        clean_path = os.path.join(clean_dir, clean_file)
+        clean_data, clean_time, clean_rate = extract_audio(clean_path)
+        
+        noise_length = len(clean_data)
+        noise = np.random.randn(noise_length).astype(np.float32)
+        noise *= (clean_data.max() / np.abs(noise.max()))
+        noise *= 0.25
+        noisy = clean_data + noise
+        noisy_path = os.path.join(noisy_dir, clean_file)
+        print(noisy_path)
+        sf.write(noisy_path, noisy, clean_rate)
+        
+def add_reverb_to_data():
+    clean_dir = "/home/may.tiger/AIProject/big_data_set/denoise_extra/dry"
+    noisy_dir = "/home/may.tiger/AIProject/big_data_set/denoise_extra/wet"
+    clean_files = os.listdir(clean_dir)
+    noisy_files = os.listdir(noisy_dir)
+    for i in range(len(clean_files)):
+        clean_file = clean_files[i]
+        clean_path = os.path.join(clean_dir, clean_file)
+        clean_data, clean_time, clean_rate = extract_audio(clean_path)
+        
+        noisy_file = noisy_files[i]
+        noisy_path = os.path.join(noisy_dir, noisy_file)
+        noisy_data, noisy_time, noisy_rate = extract_audio(noisy_path)
+        
+        reverbed_noisy_data = add_reverb(clean_data, clean_rate)
+        reverbed_noisy_path = os.path.join(noisy_dir, clean_file)
+        print(reverbed_noisy_path)
+        sf.write(reverbed_noisy_path, reverbed_noisy_data, clean_rate)
+
 def present_outputs():
     dry_example =           "/home/may.tiger/AIProject/big_data_set/fine_tune_data/test/clean/p234_008.wav"
     noisy_example =         "/home/may.tiger/AIProject/big_data_set/fine_tune_data/test/noisy_only/p234_008.wav"
@@ -300,13 +338,17 @@ def present_outputs():
 
 # # DeNoiser_model
 # DENoise_train()
+DENoise_train_extra()
 # DENoise_eval()
 
 # # FineTuning_model
 # FineTuning_train()
 # FineTuning_eval()
 
-FineTuning_pesq_test()
+''' helper functions '''
 
+# FineTuning_pesq_test()
+
+# add_noise_to_data()
 
 # present_outputs()

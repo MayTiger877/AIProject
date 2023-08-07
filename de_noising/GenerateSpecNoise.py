@@ -118,3 +118,24 @@ def DENoise_gen_spec():
     X, y = test_data(dry_audio_rootdir, wet_audio_rootdir, 0, dir_len, checkpoints)
 
     print("finished generating\n")
+    
+def DENoise_gen_spec_extra():
+    dry_audio_rootdir = '/home/may.tiger/AIProject/big_data_set/denoise_extra/dry'
+    wet_audio_rootdir = '/home/may.tiger/AIProject/big_data_set/denoise_extra/wet'
+
+    checkpointX =           '/home/may.tiger/AIProject/de_noising/generateSpecs_extra/noisyspecs.pth'
+    checkpointY =           '/home/may.tiger/AIProject/de_noising/generateSpecs_extra/cleanspecs.pth'
+    checkpoint_wavenoisy =  '/home/may.tiger/AIProject/de_noising/generateSpecs_extra/wavenoisy.pth'
+    checkpoint_wavetarget = '/home/may.tiger/AIProject/de_noising/generateSpecs_extra/waveclean.pth'
+
+    checkpoints = [checkpointX, checkpointY, checkpoint_wavenoisy, checkpoint_wavetarget]
+
+    print("starting generating\n")
+    dir_len = len([entry for entry in os.listdir(dry_audio_rootdir) if os.path.isfile(os.path.join(dry_audio_rootdir, entry))])
+    print(dir_len)
+    X, y = test_data(dry_audio_rootdir, wet_audio_rootdir, 0, dir_len, checkpoints)
+
+    print("finished generating\n")
+    
+    
+DENoise_gen_spec_extra()
