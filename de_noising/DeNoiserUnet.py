@@ -208,8 +208,8 @@ def DENoise_train():
 
 def DENoise_train_extra():
   dataset_train, dataset_val = load_extra_data()
-  train_loader = DataLoader(dataset_train, batch_size = 16, shuffle = True, num_workers = 4, pin_memory = True)
-  val_loader = DataLoader(dataset_val, batch_size = 16, shuffle = True, num_workers = 4, pin_memory = True)
+  train_loader = DataLoader(dataset_train, batch_size = 32, shuffle = True, num_workers = 4, pin_memory = True)
+  val_loader = DataLoader(dataset_val, batch_size = 32, shuffle = True, num_workers = 4, pin_memory = True)
   net = DeNoiseUNet(n_channels=1, bilinear=False, confine=False).cuda()
 
   net.load_state_dict(torch.load('/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_state_dict.pth'))
@@ -223,8 +223,8 @@ def DENoise_train_extra():
   train_loss, val_loss = trainer(net, train_loader, val_loader, checkpoints, lr=lr, nEpochs = epochs)
 
   plt.style.reload_library()
-  train_loss = torch.load('/home/may.tiger/AIProject/de_noising/training/losses/train_loss_extra_DeNoiser.pth')
-  val_loss =   torch.load('/home/may.tiger/AIProject/de_noising/training/losses/val_loss_extra_DeNoiser.pth')
+  train_loss = torch.load('/home/may.tiger/AIProject/de_noising/training/losses/train_extra_loss_DeNoiser.pth')
+  val_loss =   torch.load('/home/may.tiger/AIProject/de_noising/training/losses/val_extra_loss_DeNoiser.pth')
   matplotlib.rc('xtick', labelsize=10) 
   matplotlib.rc('ytick', labelsize=10)
   matplotlib.rcParams.update({'font.size': 10})

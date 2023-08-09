@@ -138,4 +138,9 @@ def DENoise_gen_spec_extra():
     print("finished generating\n")
     
     
-DENoise_gen_spec_extra()
+# DENoise_gen_spec_extra()
+
+# loaded_X = torch.load('/home/may.tiger/AIProject/de_noising/generateSpecs_extra/noisyspecs.pth')
+# loaded_y = torch.load('/home/may.tiger/AIProject/de_noising/generateSpecs_extra/cleanspecs.pth')
+# print(loaded_X.shape)
+# print(loaded_y.shape)

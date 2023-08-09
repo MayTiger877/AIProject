@@ -337,7 +337,7 @@ def present_outputs():
 # LSUnet_eval()
 
 # # DeNoiser_model
-# DENoise_train()
+DENoise_train()
 DENoise_train_extra()
 # DENoise_eval()
 
