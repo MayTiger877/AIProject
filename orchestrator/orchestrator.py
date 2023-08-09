@@ -350,6 +350,12 @@ def present_outputs():
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/resized_cv_de_reverbed_audio.wav', resized_cv_de_reverbed_wav, dry_example_rate)
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/resized_cv_de_noisy_de_reverbed_audio.wav', resized_cv_de_noisy_de_reverbed_wav, dry_example_rate)
     
+    cutoff_freq = 7000
+    filtered_waveform = librosa.effects.preemphasis(resized_cv_de_reverbed_wav, coef=cutoff_freq/16000)
+    sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_dry_audio_filtered.wav', filtered_waveform, dry_example_rate)
+
+    
+    
 #----------------------------------- activating functions --------------------------------------
 
 # # LSU_model 
