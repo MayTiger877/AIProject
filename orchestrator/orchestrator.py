@@ -292,6 +292,9 @@ def present_outputs():
     de_dry_wav_not_cvsized = reconstruct_wave(dry_spec, dry_example_rate)
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_dry_spec_not_cvsized.wav', de_dry_wav_not_cvsized, 16000)
     
+    # save original spectrograms size
+    dry_spec_original_size = dry_spec.shape
+    
     dry_spec =          cv2.resize(dry_spec,          dsize = (time_size, frequency_size), interpolation = cv2.INTER_LANCZOS4)
     noisy_spec =        cv2.resize(noisy_spec,        dsize = (time_size, frequency_size), interpolation = cv2.INTER_LANCZOS4)
     reverbed_spec =     cv2.resize(reverbed_spec,     dsize = (time_size, frequency_size), interpolation = cv2.INTER_LANCZOS4)
@@ -318,17 +321,34 @@ def present_outputs():
     de_noisy_de_reverbed_spec = model_FineTuning(net_input.cuda())
     graph_spec(de_noisy_de_reverbed_spec[0, 0, :, :].cpu().detach().numpy(), title="de_noisy_de_reverbed_spec", save_path='/home/may.tiger/AIProject/orchestrator/outputs/de_noisy_de_reverbed_spec')
     
+    # graph after cv resize
+    resized_cv_de_noised_spec = de_noised_spec[0, 0, :, :].cpu().detach().numpy()
+    resized_cv_de_reverbed_spec = de_reverbed_spec[0, 0, :, :].cpu().detach().numpy()
+    resized_cv_de_noisy_de_reverbed_spec = de_noisy_de_reverbed_spec[0, 0, :, :].cpu().detach().numpy()
+    resized_cv_de_noised_spec = cv2.resize(resized_cv_de_noised_spec, dsize = (dry_spec_original_size[1], dry_spec_original_size[0]), interpolation = cv2.INTER_LANCZOS4)
+    resized_cv_de_reverbed_spec = cv2.resize(resized_cv_de_reverbed_spec, dsize = (dry_spec_original_size[1], dry_spec_original_size[0]), interpolation = cv2.INTER_LANCZOS4)
+    resized_cv_de_noisy_de_reverbed_spec = cv2.resize(resized_cv_de_noisy_de_reverbed_spec, dsize = (dry_spec_original_size[1], dry_spec_original_size[0]), interpolation = cv2.INTER_LANCZOS4)
+    graph_spec(resized_cv_de_noised_spec, title="resized_cv_de_noised_spec", save_path='/home/may.tiger/AIProject/orchestrator/outputs/resized_cv_de_noised_spec')
+    graph_spec(resized_cv_de_reverbed_spec, title="resized_cv_de_reverbed_spec", save_path='/home/may.tiger/AIProject/orchestrator/outputs/resized_cv_de_reverbed_spec')
+    graph_spec(resized_cv_de_noisy_de_reverbed_spec, title="resized_cv_de_noisy_de_reverbed_spec", save_path='/home/may.tiger/AIProject/orchestrator/outputs/resized_cv_de_noisy_de_reverbed_spec')
+    
     # save wav files
     de_dry_wav = reconstruct_wave(dry_spec, dry_example_rate)
     de_noised_wav = reconstruct_wave(de_noised_spec[0, 0, :, :].cpu().detach().numpy(), noisy_example_rate)
     de_reverbed_wav = reconstruct_wave(de_reverbed_spec[0, 0, :, :].cpu().detach().numpy(), reverbed_example_rate)
     de_noisy_de_reverbed_wav = reconstruct_wave(de_noisy_de_reverbed_spec[0, 0, :, :].cpu().detach().numpy(), noisy_reverb_example_rate)
+    resized_cv_de_noised_wav = reconstruct_wave(resized_cv_de_noised_spec, dry_example_rate)
+    resized_cv_de_reverbed_wav = reconstruct_wave(resized_cv_de_reverbed_spec, dry_example_rate)
+    resized_cv_de_noisy_de_reverbed_wav = reconstruct_wave(resized_cv_de_noisy_de_reverbed_spec, dry_example_rate)
     
     #save all wav files
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_dry_audio.wav', de_dry_wav, dry_example_rate)
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_noised_audio.wav', de_noised_wav, noisy_example_rate)
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_reverbed_audio.wav', de_reverbed_wav, reverbed_example_rate)
     sf.write('/home/may.tiger/AIProject/orchestrator/outputs/de_noisy_de_reverbed_audio.wav', de_noisy_de_reverbed_wav, noisy_reverb_example_rate)
+    sf.write('/home/may.tiger/AIProject/orchestrator/outputs/resized_cv_de_noised_audio.wav', resized_cv_de_noised_wav, dry_example_rate)
+    sf.write('/home/may.tiger/AIProject/orchestrator/outputs/resized_cv_de_reverbed_audio.wav', resized_cv_de_reverbed_wav, dry_example_rate)
+    sf.write('/home/may.tiger/AIProject/orchestrator/outputs/resized_cv_de_noisy_de_reverbed_audio.wav', resized_cv_de_noisy_de_reverbed_wav, dry_example_rate)
     
 #----------------------------------- activating functions --------------------------------------
 
@@ -337,8 +357,8 @@ def present_outputs():
 # LSUnet_eval()
 
 # # DeNoiser_model
-DENoise_train()
-DENoise_train_extra()
+# DENoise_train()
+# DENoise_train_extra()
 # DENoise_eval()
 
 # # FineTuning_model
@@ -351,4 +371,4 @@ DENoise_train_extra()
 
 # add_noise_to_data()
 
-# present_outputs()
+present_outputs()

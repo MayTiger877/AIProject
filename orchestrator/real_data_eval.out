@@ -14,3 +14,39 @@ Epoch : 5 || Train Loss: 40.209 || Val Loss: 47.461
 Epoch : 6 || Train Loss: 32.624 || Val Loss: 36.376
 saved models
 Epoch : 7 || Train Loss: 25.353 || Val Loss: 33.676
+Epoch : 8 || Train Loss: 32.016 || Val Loss: 30.195
+saved models
+Epoch : 9 || Train Loss: 31.621 || Val Loss: 34.398
+Epoch : 10 || Train Loss: 26.542 || Val Loss: 26.459
+saved models
+Epoch : 11 || Train Loss: 23.863 || Val Loss: 30.581
+Epoch : 12 || Train Loss: 24.688 || Val Loss: 31.824
+saved models
+Epoch : 13 || Train Loss: 28.427 || Val Loss: 20.647
+Epoch : 14 || Train Loss: 21.070 || Val Loss: 42.550
+saved models
+Epoch : 15 || Train Loss: 16.068 || Val Loss: 35.007
+Epoch : 16 || Train Loss: 18.471 || Val Loss: 28.375
+saved models
+Epoch : 17 || Train Loss: 15.799 || Val Loss: 33.470
+Epoch : 18 || Train Loss: 15.095 || Val Loss: 23.580
+saved models
+7218
+1274
+Traceback (most recent call last):
+  File "orchestrator.py", line 341, in <module>
+    resized_cv_de_reverbed_wav = reconstruct_wave(resized_cv_de_reverbed_spec, dry_example_rate)
+  File "../de_noising/DeNoiserUnet.py", line 223, in DENoise_train_extra
+    train_loss, val_loss = trainer(net, train_loader, val_loader, checkpoints, lr=lr, nEpochs = epochs)
+  File "../de_noising/DeNoiserUnet.py", line 143, in trainer
+    output = model(noisy_data)
+  File "/home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "../de_noising/DeNoiserUnet.py", line 65, in forward
+    x = self.up4(x, x1)
+  File "/home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "../utils.py", line 299, in forward
+    x = torch.cat([x2, x1], dim=1)
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 680.00 MiB (GPU 0; 7.80 GiB total capacity; 5.24 GiB already allocated; 668.31 MiB free; 6.10 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+*** SLURM BATCH JOB 'trainig_model' DONE ***
