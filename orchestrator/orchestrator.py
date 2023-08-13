@@ -248,6 +248,64 @@ def add_reverb_to_data():
         print(reverbed_noisy_path)
         sf.write(reverbed_noisy_path, reverbed_noisy_data, clean_rate)
 
+def augment_data():    
+    clean_dir = "/home/may.tiger/AIProject/data/LibriSpeechTrain/LibriSpeech/train-clean-100"
+    noises_dir = "/home/may.tiger/AIProject/big_data_set/denoise_extra_2/UrbanSound/data"
+    
+    clean_file_names = []
+    clean_file_paths = []
+    noise_file_names = []
+    noise_file_paths = []
+    
+    for root, dirs, files in os.walk(clean_dir):
+        for file in files:
+            if (file.endswith(".wav") or file.endswith(".flac")):
+                clean_file_paths.append(os.path.join(root, file))
+                clean_file_names.append(file)
+    
+    for root, dirs, files in os.walk(noises_dir):
+        for file in files:
+            if (file.endswith(".wav") or file.endswith(".flac")):
+                noise_file_paths.append(os.path.join(root, file))
+                noise_file_names.append(file)
+                             
+   
+    for i in tqdm(range(10000)):
+        clean_data, clean_time, clean_rate = extract_audio(clean_file_paths[i])
+        random_noise = random.sample(range(len(noise_file_paths)), 1)[0]
+        random_noise_data, random_noise_time, random_noise_rate = extract_audio(noise_file_paths[random_noise])
+        
+        if clean_rate != 16000:
+            clean_data = librosa.resample(clean_data, clean_rate, 16000)
+        if random_noise_rate != 16000:
+            random_noise_data = librosa.resample(random_noise_data, orig_sr=random_noise_rate, target_sr=16000)
+                                                
+            
+        if (len(random_noise_data) > len(clean_data)):
+            random_noise_data = random_noise_data[:len(clean_data)]
+        else:
+            while (len(random_noise_data) < len(clean_data)):
+                random_noise_data = np.concatenate((random_noise_data, random_noise_data) , axis=0)
+            random_noise_data = random_noise_data[:len(clean_data)]
+        
+        random_noise_data *= (clean_data.max() / np.abs(random_noise_data.max()))
+        random_noise_data *= 0.25
+        noisy_data = clean_data + random_noise_data
+        
+        clean_path = os.path.join("/home/may.tiger/AIProject/big_data_set/denoise_extra_2/dry", clean_file_names[i])
+        noisy_path = os.path.join("/home/may.tiger/AIProject/big_data_set/denoise_extra_2/wet", clean_file_names[i])
+
+        if (clean_path.endswith(".flac")):
+            clean_path = clean_path.replace(".flac", ".wav")
+        if (noisy_path.endswith(".flac")):
+            noisy_path = noisy_path.replace(".flac", ".wav")
+        
+        sf.write(clean_path, clean_data, clean_rate)
+        sf.write(noisy_path, noisy_data, clean_rate)
+    
+        
+    
+
 def present_outputs():
     dry_example =           "/home/may.tiger/AIProject/big_data_set/fine_tune_data/test/clean/p234_008.wav"
     noisy_example =         "/home/may.tiger/AIProject/big_data_set/fine_tune_data/test/noisy_only/p234_008.wav"
@@ -377,4 +435,6 @@ def present_outputs():
 
 # add_noise_to_data()
 
-present_outputs()
+# present_outputs()
+
+augment_data()
