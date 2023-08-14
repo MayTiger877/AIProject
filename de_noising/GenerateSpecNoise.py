@@ -137,8 +137,25 @@ def DENoise_gen_spec_extra():
 
     print("finished generating\n")
     
-    
-# DENoise_gen_spec_extra()
+def DENoise_gen_spec_extra_2():
+    dry_audio_rootdir = '/home/may.tiger/AIProject/big_data_set/denoise_extra_2/dry'
+    wet_audio_rootdir = '/home/may.tiger/AIProject/big_data_set/denoise_extra_2/wet'
+
+    checkpointX =           '/home/may.tiger/AIProject/de_noising/generateSpecs_extra_2/noisyspecs.pth'
+    checkpointY =           '/home/may.tiger/AIProject/de_noising/generateSpecs_extra_2/cleanspecs.pth'
+    checkpoint_wavenoisy =  '/home/may.tiger/AIProject/de_noising/generateSpecs_extra_2/wavenoisy.pth'
+    checkpoint_wavetarget = '/home/may.tiger/AIProject/de_noising/generateSpecs_extra_2/waveclean.pth'
+
+    checkpoints = [checkpointX, checkpointY, checkpoint_wavenoisy, checkpoint_wavetarget]
+
+    print("starting generating\n")
+    dir_len = len([entry for entry in os.listdir(dry_audio_rootdir) if os.path.isfile(os.path.join(dry_audio_rootdir, entry))])
+    print(dir_len)
+    X, y = test_data(dry_audio_rootdir, wet_audio_rootdir, 0, dir_len, checkpoints)
+
+    print("finished generating\n")
+        
+DENoise_gen_spec_extra_2()
 
 # loaded_X = torch.load('/home/may.tiger/AIProject/de_noising/generateSpecs_extra/noisyspecs.pth')
 # loaded_y = torch.load('/home/may.tiger/AIProject/de_noising/generateSpecs_extra/cleanspecs.pth')

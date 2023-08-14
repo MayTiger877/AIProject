@@ -395,7 +395,7 @@ def FineTuning_train():
   LateSupUNetModel = LateSupUNetModel.cuda()
    
   DeNoiserModel = DeNoiseUNet(n_channels=1, bilinear=False)
-  DeNoiserModel.load_state_dict(torch.load('/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_state_dict.pth', map_location=lambda storage, loc: storage))
+  DeNoiserModel.load_state_dict(torch.load('/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_extra_2_state_dict.pth', map_location=lambda storage, loc: storage))
   DeNoiserModel = DeNoiserModel.cuda()
    
   FineTuning_Model = FineTuningUNet(LateSupUNetModel, DeNoiserModel)

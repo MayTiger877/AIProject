@@ -107,6 +107,19 @@ def load_extra_data():
   print(len(dataset_val))
   return dataset_train, dataset_val
 
+def load_extra_data_2():
+  X = torch.load('/home/may.tiger/AIProject/de_noising/generateSpecs_extra_2/noisyspecs.pth')
+  y = torch.load('/home/may.tiger/AIProject/de_noising/generateSpecs_extra_2/cleanspecs.pth')
+  
+  total_dataset = ReverbDataset(X, y)
+  length_train = int(len(total_dataset)*0.85)
+  length_val = len(total_dataset) - length_train
+  lengths = [length_train, length_val]
+  dataset_train, dataset_val = random_split(total_dataset, lengths)
+  print(len(dataset_train))
+  print(len(dataset_val))
+  return dataset_train, dataset_val
+
 def trainer(model, train_loader, val_loader, checkpoints, nEpochs = 30, lr = 1e-3):
   """
   Train model
@@ -116,7 +129,9 @@ def trainer(model, train_loader, val_loader, checkpoints, nEpochs = 30, lr = 1e-
   val_loader: dataloader containing validation examples
   checkpoints: list of directories to save the model, train loss and Val loss respectively
   """
-
+  print("TRAINING STARTED")
+  print("TRAINING STARTED")
+  print("TRAINING STARTED")
   loss_function = nn.MSELoss()
   beta1 = 0.5
   beta2 = 0.999
@@ -237,6 +252,38 @@ def DENoise_train_extra():
   plt.grid()
   plt.legend()
   plt.savefig(f"DE_Noiser_extra_MSE_loss_to_epochs.jpg")
+  
+def DENoise_train_extra_2():
+  dataset_train, dataset_val = load_extra_data_2()
+  train_loader = DataLoader(dataset_train, batch_size = 32, shuffle = True, num_workers = 4, pin_memory = True)
+  val_loader = DataLoader(dataset_val, batch_size = 32, shuffle = True, num_workers = 4, pin_memory = True)
+  net = DeNoiseUNet(n_channels=1, bilinear=False, confine=False).cuda()
+
+  net.load_state_dict(torch.load('/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_state_dict.pth'))
+                  
+  checkpoints = ['/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_extra_2_state_dict.pth', 
+                 '/home/may.tiger/AIProject/de_noising/training/losses/train_extra_2_loss_DeNoiser.pth', 
+                 '/home/may.tiger/AIProject/de_noising/training/losses/val_extra_2_loss_DeNoiser.pth']
+  
+  epochs = 20
+  lr = 2e-3
+  train_loss, val_loss = trainer(net, train_loader, val_loader, checkpoints, lr=lr, nEpochs = epochs)
+
+  plt.style.reload_library()
+  train_loss = torch.load('/home/may.tiger/AIProject/de_noising/training/losses/train_extra_2_loss_DeNoiser.pth')
+  val_loss =   torch.load('/home/may.tiger/AIProject/de_noising/training/losses/val_extra_2_loss_DeNoiser.pth')
+  matplotlib.rc('xtick', labelsize=10) 
+  matplotlib.rc('ytick', labelsize=10)
+  matplotlib.rcParams.update({'font.size': 10})
+  plt.figure()
+  plt.rcParams["font.family"] = "serif"
+  plt.plot(np.arange(1, (epochs+1), 1), train_loss, '-', label = 'Train loss')
+  plt.plot(np.arange(1, (epochs+1), 1), val_loss, '-', label = 'Validation loss')
+  plt.xlabel('Epochs')
+  plt.ylabel('MSE loss')
+  plt.grid()
+  plt.legend()
+  plt.savefig(f"DE_Noiser_extra_2_MSE_loss_to_epochs.jpg")  
   
 ### ------------------------ EVALUATION ------------------------ 
 

@@ -1,3 +1,38 @@
 *** SLURM BATCH JOB 'trainig_model' STARTING ***
 *** Activating environment reverb ***
-  0%|          | 0/10000 [00:00<?, ?it/s]  0%|          | 1/10000 [00:00<2:45:24,  1.01it/s]  0%|          | 2/10000 [00:03<4:46:51,  1.72s/it]  0%|          | 3/10000 [00:25<30:38:06, 11.03s/it]  0%|          | 4/10000 [00:27<21:22:17,  7.70s/it]  0%|          | 5/10000 [00:29<14:53:15,  5.36s/it]  0%|          | 6/10000 [00:34<14:39:31,  5.28s/it]  0%|          | 7/10000 [00:34<10:13:50,  3.69s/it]  0%|          | 8/10000 [00:35<7:49:51,  2.82s/it]   0%|          | 9/10000 [00:42<11:10:16,  4.03s/it]  0%|          | 10/10000 [00:53<17:24:21,  6.27s/it]  0%|          | 11/10000 [00:54<12:31:40,  4.52s/it]  0%|          | 12/10000 [00:57<11:16:37,  4.06s/it]  0%|          | 13/10000 [00:57<8:08:22,  2.93s/it]   0%|          | 14/10000 [00:58<6:14:59,  2.25s/it]  0%|          | 15/10000 [01:01<7:31:14,  2.71s/it]  0%|          | 16/10000 [01:05<7:47:27,  2.81s/it]  0%|          | 17/10000 [01:11<10:33:39,  3.81s/it]  0%|          | 18/10000 [01:14<10:34:52,  3.82s/it]  0%|          | 20/10000 [01:16<6:39:06,  2.40s/it]   0%|          | 21/10000 [01:16<5:13:15,  1.88s/it]  0%|          | 22/10000 [01:18<4:44:45,  1.71s/it]  0%|          | 23/10000 [01:19<4:53:39,  1.77s/it]  0%|          | 24/10000 [01:26<8:44:01,  3.15s/it]
+4250
+750
+Current device: cuda:0
+/home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  cpuset_checked))
+Epoch : 1 || Train Loss: 41.745 || Val Loss: 68.190
+Epoch : 2 || Train Loss: 52.634 || Val Loss: 43.437
+saved models
+Epoch : 3 || Train Loss: 48.980 || Val Loss: 61.450
+Epoch : 4 || Train Loss: 47.232 || Val Loss: 57.807
+saved models
+Epoch : 5 || Train Loss: 34.069 || Val Loss: 53.301
+Epoch : 6 || Train Loss: 47.465 || Val Loss: 36.485
+saved models
+Epoch : 7 || Train Loss: 39.188 || Val Loss: 57.817
+Epoch : 8 || Train Loss: 45.729 || Val Loss: 38.368
+saved models
+Epoch : 9 || Train Loss: 33.248 || Val Loss: 50.933
+Epoch : 10 || Train Loss: 33.357 || Val Loss: 51.878
+saved models
+Epoch : 11 || Train Loss: 30.402 || Val Loss: 72.789
+Epoch : 12 || Train Loss: 25.800 || Val Loss: 65.380
+saved models
+Epoch : 13 || Train Loss: 28.016 || Val Loss: 68.950
+Epoch : 14 || Train Loss: 23.097 || Val Loss: 35.194
+saved models
+Epoch : 15 || Train Loss: 23.730 || Val Loss: 55.887
+Epoch : 16 || Train Loss: 15.119 || Val Loss: 41.001
+saved models
+Epoch : 17 || Train Loss: 16.991 || Val Loss: 56.482
+Epoch : 18 || Train Loss: 11.010 || Val Loss: 51.630
+saved models
+Epoch : 19 || Train Loss: 15.759 || Val Loss: 45.600
+Epoch : 20 || Train Loss: 15.026 || Val Loss: 40.313
+saved models
+*** SLURM BATCH JOB 'trainig_model' DONE ***

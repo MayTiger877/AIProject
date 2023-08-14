@@ -39,6 +39,43 @@ def FineTune_reverb_noisy_data():
         sf.write(save_path, moist_reverb_audio, 16000)
             
     print('Saved data', flush=True)
+    
+    
+def FineTune_reverb_noisy_data_2():
+    rir_dir = "/home/may.tiger/AIProject/data/ClassroomOmni"
+    moist_dir = "/home/may.tiger/AIProject/big_data_set/fine_tune_data_2/test/noisy_only"
+    wet_dir = "/home/may.tiger/AIProject/big_data_set/fine_tune_data_2/test/noisy_reverb"
+
+    sys.path.append(moist_dir)
+    sys.path.append(rir_dir)
+
+    rir_file_names = []
+    for subdir, dirs, files in os.walk(rir_dir):
+        for file in files:
+            if (".wav" in file):
+                rir_file_names.append(os.path.join(subdir,file))
+
+    audio_file_names = []
+    for subdir, dirs, files in os.walk(moist_dir):
+        for file in files:
+            if (".wav" in file):
+                audio_file_names.append(os.path.join(subdir,file))
+
+    print ("RIRs found: " + str(len(rir_file_names)))
+    print ("Audio files found: " + str(len(audio_file_names)))
+
+    for i in range(0, len(audio_file_names)):
+        print("Proccesing audio file n°: " + str(i+1), flush=True)
+        
+        rir_index = random.sample(range(len(rir_file_names)), 1)[0]
+        ir_audio, ir_time, ir_rate = extract_audio(rir_file_names[rir_index])
+        moist_audio, speech_time, speech_rate = extract_audio(audio_file_names[i])
+        moist_reverb_audio = discrete_conv(moist_audio, ir_audio, speech_rate, ir_rate)
+        moist_reverb_audio = moist_reverb_audio[0:len(moist_audio)]
+        save_path = wet_dir + '/' + audio_file_names[i].split('/')[-1]
+        sf.write(save_path, moist_reverb_audio, 16000)
+            
+    print('Saved data', flush=True)
 
 def generate_specs(clean_audio_dir, noisy_audio_dir, lower_bound, upper_bound, checkpoints):
     checkpointX = checkpoints[0]
