@@ -1,3 +1,21 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import librosa
+import librosa.display as display
+import librosa.feature
+from scipy.signal import resample
+import os
+import os.path
+import sys
+import torch
+import torchaudio
+import cv2
+import random
+import math
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.utils.data import Dataset
+
 from pathlib import Path
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from utils import *
@@ -38,8 +56,7 @@ def FineTune_reverb_noisy_data():
         save_path = wet_dir + '/' + audio_file_names[i].split('/')[-1]
         sf.write(save_path, moist_reverb_audio, 16000)
             
-    print('Saved data', flush=True)
-    
+    print('Saved data', flush=True)    
     
 def FineTune_reverb_noisy_data_2():
     rir_dir = "/home/may.tiger/AIProject/data/ClassroomOmni"
@@ -130,15 +147,15 @@ def generate_specs(clean_audio_dir, noisy_audio_dir, lower_bound, upper_bound, c
         if ((i+1)%500 == 0):    
             torch.save(X, checkpointX)
             torch.save(y, checkpointY)
-            torch.save(wave_noisy, checkpoint_wavenoisy)
-            torch.save(wave_targets, checkpoint_wavetarget)
+            # torch.save(wave_noisy, checkpoint_wavenoisy)
+            # torch.save(wave_targets, checkpoint_wavetarget)
             print('Saved data', flush = True)
           
         if ((i+1)==(len(noisy_audio_file_names))):
             torch.save(X, checkpointX)
             torch.save(y, checkpointY)
-            torch.save(wave_noisy, checkpoint_wavenoisy)
-            torch.save(wave_targets, checkpoint_wavetarget)
+            # torch.save(wave_noisy, checkpoint_wavenoisy)
+            # torch.save(wave_targets, checkpoint_wavetarget)
             print('Saved data', flush = True)
             return X, y
 
@@ -161,3 +178,24 @@ def FineTune_gen_spec():
     X, y = generate_specs(dry_audio_rootdir, wet_audio_rootdir, 0, dir_len, checkpoints)
 
     print("finished generating\n")
+       
+def FineTune_gen_spec_2():
+    dry_audio_rootdir = '/home/may.tiger/AIProject/big_data_set/fine_tune_data_2/dry'
+    wet_audio_rootdir = '/home/may.tiger/AIProject/big_data_set/fine_tune_data_2/wet'
+
+    checkpointX =           '/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs_2/noisyspecs.pth'
+    checkpointY =           '/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs_2/cleanspecs.pth'
+    checkpoint_wavenoisy =  '/home/may.tiger/AIProject/fine_tuning/NoisyReverbWav/wavenoisy.pth'
+    checkpoint_wavetarget = '/home/may.tiger/AIProject/fine_tuning/NoisyReverbWav/waveclean.pth'
+
+    checkpoints = [checkpointX, checkpointY, checkpoint_wavenoisy, checkpoint_wavetarget]
+
+    print("starting generating\n")
+    dir_len = len([entry for entry in os.listdir(dry_audio_rootdir) if os.path.isfile(os.path.join(dry_audio_rootdir, entry))])
+    print(dir_len)
+    X, y = generate_specs(dry_audio_rootdir, wet_audio_rootdir, 0, dir_len, checkpoints)
+
+    print("finished generating\n")
+    
+    
+FineTune_gen_spec_2()

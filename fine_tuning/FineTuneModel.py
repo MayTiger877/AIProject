@@ -45,16 +45,10 @@ class FineTuningUNet(nn.Module):
         self.late_sup_unet = late_sup_unet
 
     def forward(self, input):
-        output_1 = self.denoise_unet(input)
-        combined_output = self.late_sup_unet(output_1)
+        output_1 = self.late_sup_unet(input)
+        combined_output = self.denoise_unet(output_1)
         return combined_output
 
-    # Noise + Late Reverberation Supression U-net
-    # def __init__(self, DeNoiseUNet, LateSupUNet):
-    #     super().__init__()
-    #     self.modelA = DeNoiseUNet
-    #     self.modelB = LateSupUNet
-    #     # self.classifier = nn.Linear(340, 340) #try maybe non/bi-linear or RNN layer... TODO
 
 ##############################################################################################
 
@@ -371,8 +365,8 @@ def visualize_training_results(train_loss_array,
 #################################### TRAINING ####################################
 def FineTuning_train():
   # # data set prep
-  X = torch.load('/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs/cleanspecs.pth')
-  y = torch.load('/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs/noisyspecs.pth')
+  X = torch.load('/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs/noisyspecs.pth')
+  y = torch.load('/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs/cleanspecs.pth')
    
   total_dataset = ReverbDataset(X, y)
   length_train = int(len(total_dataset)*0.85)
@@ -395,7 +389,7 @@ def FineTuning_train():
   LateSupUNetModel = LateSupUNetModel.cuda()
    
   DeNoiserModel = DeNoiseUNet(n_channels=1, bilinear=False)
-  DeNoiserModel.load_state_dict(torch.load('/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_extra_2_state_dict.pth', map_location=lambda storage, loc: storage))
+  DeNoiserModel.load_state_dict(torch.load('/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_extra_2_state_dict.pth', map_location=lambda storage, loc: storage))  
   DeNoiserModel = DeNoiserModel.cuda()
    
   FineTuning_Model = FineTuningUNet(LateSupUNetModel, DeNoiserModel)
@@ -429,7 +423,7 @@ def FineTuning_train():
   plt.legend()
   plt.savefig(f"Fine_Tuneing_MSE_loss_to_epochs.jpg")
   #####################################################################################################
-  # complex training
+  # region complex training
   '''
   for param in FineTuning_Model.parameters():
       param.requires_grad = False
@@ -465,7 +459,69 @@ def FineTuning_train():
   print("\nTraining results:")
   print("\tMin val loss {:.4f} was achieved during iteration #{}".format(min_loss, min_loss_iteration + 1))
   print("\tVal accuracy during min val loss is {:.4f}".format(min_loss_accuracy))'''
+#endregion
 
+def FineTuning_train_2():
+  # # data set prep
+  X = torch.load('/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs_2/noisyspecs.pth')
+  y = torch.load('/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs_2/cleanspecs.pth')
+   
+  total_dataset = ReverbDataset(X, y)
+  length_train = int(len(total_dataset)*0.85)
+  length_val = len(total_dataset) - length_train
+  lengths = [length_train, length_val]
+  dataset_train, dataset_val = random_split(total_dataset, lengths)
+   
+  print(len(dataset_train))
+  print(len(dataset_val))
+   
+  train_loader = DataLoader(dataset_train, batch_size = 16, shuffle = True, num_workers = 4, pin_memory = True)
+  val_loader = DataLoader(dataset_val, batch_size = 16, shuffle = True, num_workers = 4, pin_memory = True)
+   
+  # models prep
+  device = torch.device("cuda:0" if(torch.cuda.is_available()) else "cpu")
+  print('Current device: ' + str(device))
+   
+  LateSupUNetModel = LateSupUnet(n_channels=1, bilinear=False)
+  LateSupUNetModel.load_state_dict(torch.load('/home/may.tiger/AIProject/data/training/model/LateSupUnet_state_dict.pth', map_location=lambda storage, loc: storage))
+  LateSupUNetModel = LateSupUNetModel.cuda()
+   
+  DeNoiserModel = DeNoiseUNet(n_channels=1, bilinear=False)
+  DeNoiserModel.load_state_dict(torch.load('/home/may.tiger/AIProject/de_noising/training/model/DeNoiser_extra_2_state_dict.pth', map_location=lambda storage, loc: storage))
+  DeNoiserModel = DeNoiserModel.cuda()
+   
+  FineTuning_Model = FineTuningUNet(LateSupUNetModel, DeNoiserModel)
+  FineTuning_Model.load_state_dict(torch.load('/home/may.tiger/AIProject/fine_tuning/training/model/FineTuning_state_dict.pth', map_location=lambda storage, loc: storage))
+  net = FineTuning_Model.cuda()
+  
+  checkpoints = ['/home/may.tiger/AIProject/fine_tuning/training/model/FineTuning_state_dict_2.pth', 
+                 '/home/may.tiger/AIProject/fine_tuning/training/losses/train_loss_FineTuning_2.pth', 
+                 '/home/may.tiger/AIProject/fine_tuning/training/losses/val_loss_FineTuning_2.pth']
+  
+  
+  epochs = 20
+  lr = 3e-2
+  train_loss, val_loss = trainer(net, train_loader, val_loader, checkpoints, lr=lr, nEpochs = epochs)
+  # best_model, train_loss_array, train_acc_array, val_loss_array, val_acc_array = training(net, train_loader, val_loader, "FineTuneSmartTrain", lr=3e-3, num_epochs = 10)
+   
+  plt.style.reload_library()
+  train_loss = torch.load('/home/may.tiger/AIProject/fine_tuning/training/losses/train_loss_FineTuning_2.pth')
+  val_loss = torch.load('/home/may.tiger/AIProject/fine_tuning/training/losses/val_loss_FineTuning_2.pth')
+ 
+  matplotlib.rc('xtick', labelsize=10) 
+  matplotlib.rc('ytick', labelsize=10)
+  matplotlib.rcParams.update({'font.size': 10})
+  plt.figure()
+  plt.rcParams["font.family"] = "serif"
+  plt.plot(np.arange(1, (epochs+1), 1), train_loss, '-', label = 'Train loss')
+  plt.plot(np.arange(1, (epochs+1), 1), val_loss, '-', label = 'Validation loss')
+  plt.xlabel('Epochs')
+  plt.ylabel('MSE loss')
+  plt.grid()
+  plt.legend()
+  plt.savefig(f"Fine_Tuneing_MSE_loss_to_epochs_2.jpg")
+  #####################################################################################################
+  
 #################################### EVALUATING ####################################
 def FineTuning_eval():
   LateSupUNetModel = LateSupUnet(n_channels=1, bilinear=False).cuda()
