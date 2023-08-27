@@ -574,6 +574,9 @@ def FineTuning_eval():
   print('fwSNRseg: {:.2f}'.format(np.mean(dereverb_fwSNRseg_list)))
   ##print('SRMR: {:.2f}'.format(np.mean(#de#reverb_srmr_list)))
 
+
+
+
 def FineTuning_pesq_test():
   ''' '''
   LateSupUNetModel = LateSupUnet(n_channels=1, bilinear=False).cuda()
@@ -646,3 +649,6 @@ def pesq_evaluate(net, dataset, path, noisyspecs, init_example, end_example, spe
     torch.save(dereverb_pesq_list, path + 'dereverb_pesq_SupUnet.pth')
       
     print('Saved')
+    
+    
+FineTuning_pesq_test()

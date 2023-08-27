@@ -13,3 +13,100 @@ Current device: cuda:0
 /home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
   cpuset_checked))
 Epoch : 1 || Train Loss: 51.536 || Val Loss: 42.834
+Epoch : 2 || Train Loss: 34.134 || Val Loss: 43.985
+saved models
+Epoch : 3 || Train Loss: 36.901 || Val Loss: 36.437
+Epoch : 4 || Train Loss: 28.667 || Val Loss: 39.758
+saved models
+Epoch : 5 || Train Loss: 26.894 || Val Loss: 36.341
+Epoch : 6 || Train Loss: 26.385 || Val Loss: 40.120
+saved models
+Epoch : 7 || Train Loss: 20.287 || Val Loss: 40.996
+Epoch : 8 || Train Loss: 21.946 || Val Loss: 26.129
+saved models
+Epoch : 9 || Train Loss: 26.065 || Val Loss: 39.688
+Epoch : 10 || Train Loss: 17.483 || Val Loss: 42.512
+saved models
+Epoch : 11 || Train Loss: 14.343 || Val Loss: 35.042
+Epoch : 12 || Train Loss: 16.713 || Val Loss: 34.074
+saved models
+Epoch : 13 || Train Loss: 13.646 || Val Loss: 34.684
+Epoch : 14 || Train Loss: 13.962 || Val Loss: 30.668
+saved models
+Epoch : 15 || Train Loss: 13.328 || Val Loss: 34.658
+Epoch : 16 || Train Loss: 11.985 || Val Loss: 27.492
+saved models
+Epoch : 17 || Train Loss: 11.054 || Val Loss: 36.401
+Epoch : 18 || Train Loss: 10.575 || Val Loss: 28.459
+saved models
+Epoch : 19 || Train Loss: 10.955 || Val Loss: 33.281
+Epoch : 20 || Train Loss: 10.903 || Val Loss: 37.708
+saved models
+8500
+1500
+Current device: cuda:0
+Epoch : 1 || Train Loss: 40.129 || Val Loss: 31.234
+Epoch : 2 || Train Loss: 28.253 || Val Loss: 58.578
+saved models
+Epoch : 3 || Train Loss: 25.649 || Val Loss: 39.083
+Epoch : 4 || Train Loss: 22.205 || Val Loss: 31.427
+saved models
+Epoch : 5 || Train Loss: 36.856 || Val Loss: 39.192
+Epoch : 6 || Train Loss: 25.737 || Val Loss: 33.363
+saved models
+Epoch : 7 || Train Loss: 21.831 || Val Loss: 28.135
+Epoch : 8 || Train Loss: 27.706 || Val Loss: 31.759
+saved models
+Epoch : 9 || Train Loss: 37.117 || Val Loss: 33.507
+Epoch : 10 || Train Loss: 22.567 || Val Loss: 31.489
+saved models
+Epoch : 11 || Train Loss: 22.226 || Val Loss: 24.477
+Epoch : 12 || Train Loss: 32.140 || Val Loss: 29.103
+saved models
+Epoch : 13 || Train Loss: 18.926 || Val Loss: 27.844
+Epoch : 14 || Train Loss: 20.306 || Val Loss: 39.134
+saved models
+Epoch : 15 || Train Loss: 23.252 || Val Loss: 27.320
+Epoch : 16 || Train Loss: 16.462 || Val Loss: 28.316
+saved models
+Epoch : 17 || Train Loss: 18.501 || Val Loss: 26.745
+Epoch : 18 || Train Loss: 21.711 || Val Loss: 25.986
+saved models
+Epoch : 19 || Train Loss: 15.052 || Val Loss: 24.766
+Epoch : 20 || Train Loss: 24.692 || Val Loss: 35.468
+saved models
+
+Perceptual Evaluation of Speech Quality (PESQ)
+
+Usage:
+ PESQ HELP               Displays this text
+ PESQ [options] ref deg
+ Run model on reference ref and degraded deg
+
+Options: +8000 +16000 +swap +wb
+ Sample rate - No default. Must select either +8000 or +16000.
+ Swap byte order - machine native format by default. Select +swap for byteswap.
+ Default mode of operation is P.862 (narrowband handset listening). Select +wb 
+ to use P.862.2 wideband extension (headphone listening).
+
+File names may not begin with a + character.
+
+Files with names ending .wav or .WAV are assumed to have a 44-byte header, which is automatically skipped.  All other file types are assumed to have no header.
+
+Perceptual Evaluation of Speech Quality (PESQ)
+
+Usage:
+ PESQ HELP               Displays this text
+ PESQ [options] ref deg
+ Run model on reference ref and degraded deg
+
+Options: +8000 +16000 +swap +wb
+ Sample rate - No default. Must select either +8000 or +16000.
+ Swap byte order - machine native format by default. Select +swap for byteswap.
+ Default mode of operation is P.862 (narrowband handset listening). Select +wb 
+ to use P.862.2 wideband extension (headphone listening).
+
+File names may not begin with a + character.
+
+Files with names ending .wav or .WAV are assumed to have a 44-byte header, which is automatically skipped.  All other file types are assumed to have no header.
+*** SLURM BATCH JOB 'trainig_model' DONE ***

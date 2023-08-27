@@ -471,8 +471,8 @@ def present_outputs():
 # DENoise_eval()
 
 # # FineTuning_model
-FineTuning_train()
-FineTuning_train_2()
+# FineTuning_train()
+# FineTuning_train_2()
 # FineTuning_eval()
 
 ''' helper functions '''
@@ -481,6 +481,6 @@ FineTuning_train_2()
 
 # add_noise_to_data()
 
-# present_outputs()
+present_outputs()
 
 # augment_data()

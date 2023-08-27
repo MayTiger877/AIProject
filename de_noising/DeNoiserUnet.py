@@ -202,7 +202,7 @@ def DENoise_train():
                  '/home/may.tiger/AIProject/de_noising/training/losses/val_loss_DeNoiser.pth']
                                                                                       # אפוקים זוגיים!!
   epochs = 18
-  lr = 2e-2
+  lr = 2e-3
   train_loss, val_loss = trainer(net, train_loader, val_loader, checkpoints, lr=lr, nEpochs = epochs)
 
   plt.style.reload_library()
