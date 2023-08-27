@@ -1,28 +1,15 @@
 *** SLURM BATCH JOB 'trainig_model' STARTING ***
 *** Activating environment reverb ***
+Current device: cuda:0
+ENTER PESQ EVALUATION
+Processing Example n°1
+(65024,)
+reverb is a 1D array
+PESQ reverberated signal: 0.000 || PESQ dereverberated signal: 0.000
+Saved
 4250
 750
 Current device: cuda:0
 /home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
   cpuset_checked))
-Traceback (most recent call last):
-  File "orchestrator.py", line 474, in <module>
-    FineTuning_train()
-  File "../fine_tuning/FineTuneModel.py", line 406, in FineTuning_train
-    train_loss, val_loss = trainer(net, train_loader, val_loader, checkpoints, lr=lr, nEpochs = epochs)
-  File "../fine_tuning/FineTuneModel.py", line 90, in trainer
-    output = model(noisy_data)
-  File "/home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
-    return forward_call(*input, **kwargs)
-  File "../fine_tuning/FineTuneModel.py", line 49, in forward
-    combined_output = self.denoise_unet(output_1)
-  File "/home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
-    return forward_call(*input, **kwargs)
-  File "../data/LateSupressionUnet.py", line 56, in forward
-    x = self.up4(x, x1)
-  File "/home/may.tiger/miniconda3/envs/reverb/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
-    return forward_call(*input, **kwargs)
-  File "../utils.py", line 299, in forward
-    x = torch.cat([x2, x1], dim=1)
-torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 340.00 MiB (GPU 0; 7.80 GiB total capacity; 6.18 GiB already allocated; 50.31 MiB free; 6.74 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
-*** SLURM BATCH JOB 'trainig_model' DONE ***
+Epoch : 1 || Train Loss: 51.536 || Val Loss: 42.834
