@@ -28,7 +28,7 @@ import torch.nn.functional as F
 import torchvision.transforms as transforms
 from scipy.io.wavfile import write
 import scienceplots
-from pysepm import llr, cepstrum_distance, fwSNRseg 
+from pysepm import llr, cepstrum_distance, fwSNRseg, srmr 
 from pystoi import stoi
 from pypesq import pesq
 

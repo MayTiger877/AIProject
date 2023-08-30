@@ -25,7 +25,7 @@ from scipy.io.wavfile import write
 import json
 from pysepm import llr, cepstrum_distance, fwSNRseg, srmr 
 from pystoi import stoi
-from pesq import pesq
+# from pesq import pesq
 
 from pathlib import Path
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
@@ -224,34 +224,34 @@ def evaluate(net, dataset, path, noisyspecs, init_example, end_example, speech_r
   print('Current device: ' + str(device))
 
   if (initial):
-    reverb_pesq_list = []
+    # reverb_pesq_list = []
     reverb_stoi_list = []
     reverb_llr_list = []
     reverb_cd_list = []
     reverb_fwSNRseg_list = []
-    ##reverb_srmr_list = []
+    reverb_srmr_list = []
 
-    dereverb_pesq_list = []
+    # dereverb_pesq_list = []
     dereverb_stoi_list = []
     dereverb_llr_list = []
     dereverb_cd_list = []
     dereverb_fwSNRseg_list = []
-    ##de#reverb_srmr_list = []
+    dereverb_srmr_list = []
   
   else:
-    reverb_pesq_list = torch.load(path + 'reverb_pesq_SupUnet.pth')
+    # reverb_pesq_list = torch.load(path + 'reverb_pesq_SupUnet.pth')
     reverb_stoi_list = torch.load(path + 'reverb_stoi_SupUnet.pth')
     reverb_llr_list = torch.load(path + 'reverb_llr_SupUnet.pth')
     reverb_cd_list = torch.load(path + 'reverb_cd_SupUnet.pth')
     reverb_fwSNRseg_list = torch.load(path + 'reverb_fwSNRseg_SupUnet.pth')
-    ##reverb_srmr_list = torch.load(path + 'reverb_srmr_SupUnet.pth')
+    reverb_srmr_list = torch.load(path + 'reverb_srmr_SupUnet.pth')
 
-    dereverb_pesq_list = torch.load(path + 'dereverb_pesq_SupUnet.pth')
+    # dereverb_pesq_list = torch.load(path + 'dereverb_pesq_SupUnet.pth')
     dereverb_stoi_list = torch.load(path + 'dereverb_stoi_SupUnet.pth')
     dereverb_llr_list = torch.load(path + 'dereverb_llr_SupUnet.pth')
     dereverb_cd_list = torch.load(path + 'dereverb_cd_SupUnet.pth')
     dereverb_fwSNRseg_list = torch.load(path + 'dereverb_fwSNRseg_SupUnet.pth')
-    ##de#reverb_srmr_list = torch.load(path + 'dereverb_srmr_SupUnet.pth')
+    dereverb_srmr_list = torch.load(path + 'dereverb_srmr_SupUnet.pth')
   
   net.eval()
   print("ENTER EVAL")
@@ -288,58 +288,58 @@ def evaluate(net, dataset, path, noisyspecs, init_example, end_example, speech_r
       recon = reconstruct_wave(recon_spec)
       recon_srmr = recon
 
-      pesq_metric_rev = pesq(original[0:len(reverb)], reverb, fs = speech_rate)
+      # pesq_metric_rev = pesq(original[0:len(reverb)], reverb, fs = speech_rate)
       stoi_metric_rev = stoi(original[0:len(reverb)], reverb, speech_rate)
       llr_metric_rev = llr(original[0:len(reverb)], reverb, speech_rate)
       cd_metric_rev = cepstrum_distance(original[0:len(reverb)], reverb, speech_rate)
       fwSNRseg_metric_rev = fwSNRseg(original[0:len(reverb)], reverb, speech_rate)
-      #srmr_metric_rev = srmr(waves[i], speech_rate)
+      srmr_metric_rev = srmr(waves[i], speech_rate)
 
-      pesq_metric_recon = pesq(original[0:len(recon)], recon, fs = speech_rate)
+      # pesq_metric_recon = pesq(original[0:len(recon)], recon, fs = speech_rate)
       stoi_metric_recon = stoi(original[0:len(recon)], recon, speech_rate)
       llr_metric_recon = llr(original[0:len(recon)], recon, speech_rate)
       cd_metric_recon = cepstrum_distance(original[0:len(recon)], recon, speech_rate)
       fwSNRseg_metric_recon = fwSNRseg(original[0:len(recon)], recon, speech_rate)
-      #srmr_metric_recon = srmr(recon_srmr, speech_rate)
+      srmr_metric_recon = srmr(recon_srmr, speech_rate)
 
-      reverb_pesq_list.append(pesq_metric_rev)
+      # reverb_pesq_list.append(pesq_metric_rev)
       reverb_stoi_list.append(stoi_metric_rev)
       reverb_llr_list.append(llr_metric_rev)
       reverb_cd_list.append(cd_metric_rev)
       reverb_fwSNRseg_list.append(fwSNRseg_metric_rev)
-      ##reverb_srmr_list.append(srmr_metric_rev)
+      reverb_srmr_list.append(srmr_metric_rev)
 
-      dereverb_pesq_list.append(pesq_metric_recon)
+      # dereverb_pesq_list.append(pesq_metric_recon)
       dereverb_stoi_list.append(stoi_metric_recon)
       dereverb_llr_list.append(llr_metric_recon)
       dereverb_cd_list.append(cd_metric_recon)
       dereverb_fwSNRseg_list.append(fwSNRseg_metric_recon)
-      ##de#reverb_srmr_list.append(srmr_metric_recon)
+      dereverb_srmr_list.append(srmr_metric_recon)
 
-      print('PESQ reverberated signal: {:.3f} || PESQ dereverberated signal: {:.3f}'.format(pesq_metric_rev, pesq_metric_recon))
+      # print('PESQ reverberated signal: {:.3f} || PESQ dereverberated signal: {:.3f}'.format(pesq_metric_rev, pesq_metric_recon))
       print('STOI reverberated signal: {:.3f} || STOI dereverberated signal: {:.3f}'.format(stoi_metric_rev, stoi_metric_recon))
       print('LLR reverberated signal: {:.3f} || LLR dereverberated signal: {:.3f}'.format(llr_metric_rev, llr_metric_recon))
       print('CD reverberated signal: {:.3f} || CD dereverberated signal: {:.3f}'.format(cd_metric_rev, cd_metric_recon))
       print('fwSNRseg reverberated signal: {:.3f} || fwSNRseg dereverberated signal: {:.3f}'.format(fwSNRseg_metric_rev, fwSNRseg_metric_recon))
-      #print('SRMR reverberated signal: {:.3f} || SRMR dereverberated signal: {:.3f}'.format(srmr_metric_rev, srmr_metric_recon))
+      print('SRMR reverberated signal: {:.3f} || SRMR dereverberated signal: {:.3f}'.format(srmr_metric_rev, srmr_metric_recon))
 
     except librosa.feature.inverse.ParameterError: 
       pass
 
     if ((i+1)%5 == 0):
-      torch.save(reverb_pesq_list, path + 'reverb_pesq_SupUnet.pth')
+      # torch.save(reverb_pesq_list, path + 'reverb_pesq_SupUnet.pth')
       torch.save(reverb_stoi_list, path + 'reverb_stoi_SupUnet.pth')
       torch.save(reverb_llr_list, path + 'reverb_llr_SupUnet.pth')
       torch.save(reverb_cd_list, path + 'reverb_cd_SupUnet.pth')
       torch.save(reverb_fwSNRseg_list, path + 'reverb_fwSNRseg_SupUnet.pth')
-      #torch.save(#reverb_srmr_list, path + 'reverb_srmr_SupUnet.pth')
+      torch.save(reverb_srmr_list, path + 'reverb_srmr_SupUnet.pth')
 
-      torch.save(dereverb_pesq_list, path + 'dereverb_pesq_SupUnet.pth')
+      # torch.save(dereverb_pesq_list, path + 'dereverb_pesq_SupUnet.pth')
       torch.save(dereverb_stoi_list, path + 'dereverb_stoi_SupUnet.pth')
       torch.save(dereverb_llr_list, path + 'dereverb_llr_SupUnet.pth')
       torch.save(dereverb_cd_list, path + 'dereverb_cd_SupUnet.pth')
       torch.save(dereverb_fwSNRseg_list, path + 'dereverb_fwSNRseg_SupUnet.pth')
-      #torch.save(#de#reverb_srmr_list, path + 'dereverb_srmr_SupUnet.pth')
+      torch.save(dereverb_srmr_list, path + 'dereverb_srmr_SupUnet.pth')
       
       print('Saved')
 
@@ -524,6 +524,7 @@ def FineTuning_train_2():
   
 #################################### EVALUATING ####################################
 def FineTuning_eval():
+  print(' -------------------- EVALUATING --------------------')
   LateSupUNetModel = LateSupUnet(n_channels=1, bilinear=False).cuda()
   DeNoiserModel = DeNoiseUNet(n_channels=1, bilinear=False).cuda()
   model_FineTuning = FineTuningUNet(LateSupUNetModel, DeNoiserModel)
@@ -538,46 +539,45 @@ def FineTuning_eval():
 
   noisyspecs = torch.load('/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs/noisyspecs.pth')
 
-  #should we chang the speech_rate? (707) #TODO
   evaluate(model_FineTuning, dataset_test, path, noisyspecs, 0, 500, speech_rate = 16000, initial = True, normalize_data=False)
 
   path = '/home/may.tiger/AIProject/fine_tuning/eval_results/'
-  reverb_pesq_list = torch.load(path + 'reverb_pesq_SupUnet.pth')
+  # reverb_pesq_list = torch.load(path + 'reverb_pesq_SupUnet.pth')
   reverb_stoi_list = torch.load(path + 'reverb_stoi_SupUnet.pth')
   reverb_llr_list = torch.load(path + 'reverb_llr_SupUnet.pth')
   reverb_cd_list = torch.load(path + 'reverb_cd_SupUnet.pth')
   reverb_fwSNRseg_list = torch.load(path + 'reverb_fwSNRseg_SupUnet.pth')
-  ##reverb_srmr_list = torch.load(path + 'reverb_srmr_SupUnet.pth')
+  reverb_srmr_list = torch.load(path + 'reverb_srmr_SupUnet.pth')
 
-  dereverb_pesq_list = torch.load(path + 'dereverb_pesq_SupUnet.pth')
+  # dereverb_pesq_list = torch.load(path + 'dereverb_pesq_SupUnet.pth')
   dereverb_stoi_list = torch.load(path + 'dereverb_stoi_SupUnet.pth')
   dereverb_llr_list = torch.load(path + 'dereverb_llr_SupUnet.pth')
   dereverb_cd_list = torch.load(path + 'dereverb_cd_SupUnet.pth')
   dereverb_fwSNRseg_list = torch.load(path + 'dereverb_fwSNRseg_SupUnet.pth')
-  ##de#reverb_srmr_list = torch.load(path + 'dereverb_srmr_SupUnet.pth')
+  dereverb_srmr_list = torch.load(path + 'dereverb_srmr_SupUnet.pth')
 
 
   print('Results: \n')
   print('Reverberant signal:')
-  print('PESQ: {:.2f}'.format(np.mean(reverb_pesq_list)))
+  # print('PESQ: {:.2f}'.format(np.mean(reverb_pesq_list)))
   print('STOI: {:.2f}'.format(np.mean(reverb_stoi_list)))
   print('LLR: {:.2f}'.format(np.mean(reverb_llr_list)))
   print('CD: {:.2f}'.format(np.mean(reverb_cd_list)))
   print('fwSNRseg: {:.2f}'.format(np.mean(reverb_fwSNRseg_list)))
-  ##print('SRMR: {:.2f}'.format(np.mean(#reverb_srmr_list)))
+  print('SRMR: {:.2f}'.format(np.mean(reverb_srmr_list)))
 
   print('\nDereverberated signal:')
-  print('PESQ: {:.2f}'.format(np.mean(dereverb_pesq_list)))
+  # print('PESQ: {:.2f}'.format(np.mean(dereverb_pesq_list)))
   print('STOI: {:.2f}'.format(np.mean(dereverb_stoi_list)))
   print('LLR: {:.2f}'.format(np.mean(dereverb_llr_list)))
   print('CD: {:.2f}'.format(np.mean(dereverb_cd_list)))
   print('fwSNRseg: {:.2f}'.format(np.mean(dereverb_fwSNRseg_list)))
-  ##print('SRMR: {:.2f}'.format(np.mean(#de#reverb_srmr_list)))
+  print('SRMR: {:.2f}'.format(np.mean(dereverb_srmr_list)))
 
 
 
 
-def FineTuning_pesq_test():
+def FineTuning_srmr_test():
   ''' '''
   LateSupUNetModel = LateSupUnet(n_channels=1, bilinear=False).cuda()
   DeNoiserModel = DeNoiseUNet(n_channels=1, bilinear=False).cuda()
@@ -592,23 +592,23 @@ def FineTuning_pesq_test():
   path = '/home/may.tiger/AIProject/fine_tuning/eval_results/'
 
   noisyspecs = torch.load('/home/may.tiger/AIProject/fine_tuning/NoisyReverbedSpecs/noisyspecs.pth')
-  pesq_evaluate(model_FineTuning, dataset_test, path, noisyspecs, 0, 1, speech_rate = 16000, initial = True, normalize_data=False)
+  srmr_evaluate(model_FineTuning, dataset_test, path, noisyspecs, 0, 1, speech_rate = 16000, initial = True, normalize_data=False)
   
-def pesq_evaluate(net, dataset, path, noisyspecs, init_example, end_example, speech_rate = 16000, initial = True, normalize_data = False): 
+def srmr_evaluate(net, dataset, path, noisyspecs, init_example, end_example, speech_rate = 16000, initial = True, normalize_data = False): 
   device = torch.device("cuda:0" if(torch.cuda.is_available()) else "cpu")
   print('Current device: ' + str(device))
-  reverb_pesq_list = []
-  dereverb_pesq_list = []
+  reverb_srmr_list = []
+  dereverb_srmr_list = []
   net.eval()
-  print("ENTER PESQ EVALUATION")
+  print("ENTER srmr EVALUATION")
   
   for i in range(init_example, end_example):
     print("Processing Example n°{}".format(i+1))
     real_spec = noisyspecs[i]
-    # print(real_spec.shape)
+    print(real_spec.shape)
     rev_spec, clean_spec = dataset.__getitem__(i)
-    # print(rev_spec.shape)
-    # print(clean_spec.shape)
+    print(rev_spec.shape)
+    print(clean_spec.shape)
     clean_spec = clean_spec[0, :, :]
     net_input = torch.zeros((1, 1, rev_spec.shape[1], rev_spec.shape[2]))
     
@@ -631,24 +631,23 @@ def pesq_evaluate(net, dataset, path, noisyspecs, init_example, end_example, spe
       print(reverb.shape)
       if (isinstance(reverb, np.ndarray) and reverb.ndim == 1):
         print('reverb is a 1D array')
-        
-      pesq_metric_rev = pesq(original[0:len(reverb)], reverb, fs=speech_rate)
+          
+      srmr_metric_rev = srmr(original[0:len(reverb)], fs=speech_rate)
 
-      pesq_metric_recon = pesq(original[0:len(recon)], recon, fs=speech_rate)
+      srmr_metric_recon = srmr(original[0:len(recon)], fs=speech_rate)
 
-      reverb_pesq_list.append(pesq_metric_rev)
+      reverb_srmr_list.append(srmr_metric_rev)
 
-      dereverb_pesq_list.append(pesq_metric_recon)
+      dereverb_srmr_list.append(srmr_metric_recon)
 
-      print('PESQ reverberated signal: {:.3f} || PESQ dereverberated signal: {:.3f}'.format(pesq_metric_rev, pesq_metric_recon))
+      print('srmr reverberated signal: {:.3f} || srmr dereverberated signal: {:.3f}'.format(srmr_metric_rev, srmr_metric_recon))
 
     except librosa.feature.inverse.ParameterError: 
       pass
 
-    torch.save(reverb_pesq_list, path + 'reverb_pesq_SupUnet.pth')
-    torch.save(dereverb_pesq_list, path + 'dereverb_pesq_SupUnet.pth')
+    torch.save(reverb_srmr_list, path + 'reverb_srmr_SupUnet.pth')
+    torch.save(dereverb_srmr_list, path + 'dereverb_srmr_SupUnet.pth')
       
     print('Saved')
     
     
-FineTuning_pesq_test()

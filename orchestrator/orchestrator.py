@@ -462,25 +462,25 @@ def present_outputs():
 
 # # LSU_model 
 # LSUnet_train()
-# LSUnet_eval()
+LSUnet_eval()
 
 # # DeNoiser_model
 # DENoise_train()
 # DENoise_train_extra()
 # DENoise_train_extra_2()
-# DENoise_eval()
+DENoise_eval()
 
 # # FineTuning_model
 # FineTuning_train()
 # FineTuning_train_2()
-# FineTuning_eval()
+FineTuning_eval()
 
 ''' helper functions '''
 
-# FineTuning_pesq_test()
+# FineTuning_srmr_test()
 
 # add_noise_to_data()
 
-present_outputs()
+# present_outputs()
 
 # augment_data()
